@@ -10,14 +10,19 @@ def send_telegram(msg):
     data = {"chat_id": CHAT_ID, "text": msg}
     requests.post(url, data=data)
 
-url = "https://www.mubasher.info/countries/eg/news"
+# قراءة المصادر
+with open("sources.txt") as f:
+    sources = f.readlines()
 
-page = requests.get(url)
-soup = BeautifulSoup(page.text, "html.parser")
+for url in sources:
+    url = url.strip()
 
-for a in soup.find_all("a"):
-    title = a.text.strip()
+    page = requests.get(url)
+    soup = BeautifulSoup(page.text, "html.parser")
 
-    if len(title) > 40:
-        send_telegram("📰 EGX News\n\n" + title)
-        break
+    for a in soup.find_all("a"):
+        title = a.text.strip()
+
+        if len(title) > 40:
+            send_telegram("📰 خبر جديد\n\n" + title)
+            break
